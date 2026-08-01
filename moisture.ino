@@ -1,3 +1,4 @@
+// Warnung Work in progress, funktionalität nicht gewährleiste. Proof of concept !!!!!
 // # claude version 0.106
 // DIY Moisture Sensor - ESP32-C3 - OpenMQTTGateway / HHCCJCY10 Emulation
 // GPIO4 = Moisture ADC, GPIO2 = VCC Messung (parasitärer Pullup)
