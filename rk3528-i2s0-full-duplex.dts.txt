@@ -1,0 +1,68 @@
+/dts-v1/;
+/plugin/;
+/ {
+	fragment@0 {
+		target-path = "/";
+		__overlay__ {
+			/* Definition of bidirectional soundcard */
+			i2s0_duplex_card {
+				compatible = "simple-audio-card";
+				simple-audio-card,name = "I2S0-Duplex";
+				status = "okay";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				/* Link 0:  (Playback) */
+				simple_audio_card_playback: simple-audio-card,dai-link@0 {
+					reg = <0>;
+					format = "i2s";
+					bitclock-master = <&cpu_dai_pb>;
+					frame-master = <&cpu_dai_pb>;
+					mclk-fs = <256>;
+					cpu_dai_pb: cpu {
+						sound-dai = <&sai0>;
+					};
+					codec {
+						sound-dai = <&i2s0_dit>;
+					};
+				};
+				/* Link 1:  (Capture) */
+				simple_audio_card_capture: simple-audio-card,dai-link@1 {
+					reg = <1>;
+					format = "i2s";
+					bitclock-master = <&cpu_dai_cap>;
+					frame-master = <&cpu_dai_cap>;
+					mclk-fs = <256>;
+					cpu_dai_cap: cpu {
+						sound-dai = <&sai0>;
+					};
+					codec {
+						sound-dai = <&i2s0_dir>;
+					};
+				};
+			};
+			/* two dummy endpoints */
+			i2s0_dit: i2s0-dit {
+				compatible = "linux,spdif-dit";
+				#sound-dai-cells = <0>;
+				status = "okay";
+			};
+			i2s0_dir: i2s0-dir {
+				compatible = "linux,spdif-dir";
+				#sound-dai-cells = <0>;
+				status = "okay";
+			};
+		};
+	};
+	/* Hardware activation of SAI0 (ffb80000) */
+	fragment@1 {
+		target = <&sai0>;
+		__overlay__ {
+			status = "okay";
+			#sound-dai-cells = <0>;
+			pinctrl-names = "default";
+			/* i2s0 Mx-Pins on Header */
+			pinctrl-0 = <&i2s0m1_sclk &i2s0m1_lrck &i2s0m1_sdi &i2s0m1_sdo>;
+		};
+	};
+};
+
